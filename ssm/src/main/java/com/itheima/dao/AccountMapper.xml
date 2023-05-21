@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.com.itheima.dao.accountMapper">
+    <!-- 根据Email寻找账号 -->
+    <select id="findAccountByEmail" resultType="com.com.itheima.domain.Account">
+        select * from a_account where email = #{email}
+    </select>
+    <insert id="addAccount" parameterType="com.com.itheima.domain.Account">
+        insert into a_account(email, password) values(#{email},#{password})
+    </insert>
+</mapper>

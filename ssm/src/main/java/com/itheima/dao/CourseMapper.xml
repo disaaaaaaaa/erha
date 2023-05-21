@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.CourseMapper">
+    <!-- 输出课程表内全体课程 -->
+    <select id="findAllCourses" resultMap="CoursesByIdResult"> select * from c_course </select>
+    <!-- 根据课程编号寻找课程 -->
+    <select id="findCoursesById" parameterType="int" resultMap="CoursesByIdResult"> select * from c_course where id = #{id} </select>
+    <!-- 根据学院编号寻找对应课程 版本一：被学院信息名称调用 -->
+    <select id="findCourseBySchoolId" parameterType="int" resultType="com.com.itheima.domain.Course"> select * from c_course where sid = #{sid} </select>
+    <select id="findHoursById" parameterType="int" resultMap="CoursesByIdResult"> select hours from c_course where id = #{id} </select>
+    <!-- 更新课程的学时 -->
+    <update id="updateCourseHours" parameterType="com.com.itheima.domain.Course"> update c_course set hours= #{hours} where id = #{id} </update>
+    <!-- 更新课程(根据id定位) -->
+    <update id="updateCourseByID" parameterType="com.com.itheima.domain.Course"> update c_course set name = #{name}, hours= #{hours}, sid = #{sid}, spic = #{spic} where id = #{id} </update>
+    <!-- 更新课程id -->
+    <update id="updateCourseId" parameterType="com.com.itheima.domain.Course"> update c_course set id = #{id} where name = #{name}</update>
+    <!-- 添加新课程 -->
+    <insert id="addCourse" parameterType="com.com.itheima.domain.Course"> insert into c_course(id, name, hours, sid, spic) values(#{id},#{name},#{hours},#{sid},#{spic}) </insert>
+    <delete id="deleteCourse" parameterType="com.com.itheima.domain.Course"> delete from c_course where id = #{id} </delete>
+    <!-- 计算课程的数量 -->
+    <select id="getCourseCount" resultType="Integer"> select count(*) from c_course </select>
+    <!-- 公用ResultMap：CoursesByIdResult -->
+    <resultMap type="com.com.itheima.domain.Course" id="CoursesByIdResult">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="hours" column="hours"/>
+        <collection property="schoolsList" column="id" ofType="com.com.itheima.domain.School" select="com.itheima.dao.SchoolMapper.findSchoolByCourseId"> </collection>
+    </resultMap>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.SchoolMapper">
+    <!-- 根据学院名称寻找学院信息 -->
+    <select id="findSchoolBySchoolName" parameterType="java.lang.String" resultMap="CoursesBySchoolnameResult"> select * from s_school where schoolname = #{schoolname} </select>
+    <!-- 根据学院id寻找学院信息 -->
+    <select id="findSchoolBySchoolId" parameterType="int" resultMap="CoursesBySchoolnameResult"> select * from s_school where id = #{id} </select>
+    <!-- 寻找全体学院的信息 -->
+    <select id="findAllSchool" resultMap="CoursesBySchoolnameResult"> select * from s_school </select>
+    <select id="getSchoolCount" resultType="Integer"> select count(*) from s_school </select>
+    <!-- 根据课程编号寻找对应学院 -->
+    <select id="findSchoolByCourseId" parameterType="int" resultType="com.com.itheima.domain.School"> select * from s_school where id in( select sid from c_course where id = #{id}) </select>
+    <!-- 公用ResultMap：CoursesBySchoolnameResult -->
+    <resultMap type="com.com.itheima.domain.School" id="CoursesBySchoolnameResult">
+        <id property="id" column="id"/>
+        <result property="schoolname" column="schoolname"/>
+        <collection property="courseList" column="id" ofType="com.com.itheima.domain.Course" select="com.itheima.dao.CourseMapper.findCourseBySchoolId"> </collection>
+    </resultMap>
+</mapper>
