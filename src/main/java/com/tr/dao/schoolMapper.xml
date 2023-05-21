@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.tr.dao.schoolMapper">
+
+        <select id="findSchoolWithCourseById" resultMap="findSchoolWithCourseByIdResult" parameterType="java.util.Arrays">
+            select *,c.id cid from s_student c,s_school s where s.id = c.sid and s.id in
+            <foreach collection="array" item="sid" open="(" separator="," close=")"> #{sid}</foreach>
+        </select>
+        <resultMap type="com.tr.pojo.School" id="findSchoolWithCourseByIdResult">
+            <id property="id" column="sid"/>
+            <result column="schoolname" property="schoolname"/>
+            <collection property="courseList" ofType="com.tr.pojo.Course">
+                <id column="cid" property="id"/>
+                <result property="name" column="name"/>
+                <result property="hours" column="hours"/>
+            </collection>
+        </resultMap>
+    </mapper>

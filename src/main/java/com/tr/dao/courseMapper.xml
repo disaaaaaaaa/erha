@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace是映射的dao接口-->
+<mapper namespace="com/tr/dao/courseMapper">
+
+<!-- 目标1：查询id=2的课程信息 -->
+<select id="fbi" parameterType="Integer" resultType="com.tr.pojo.Course">
+ select * from s_student where id=#{id}
+ </select>
+
+
+<!-- 目标2：查询出所有计算机学院开设的课程信息 -->
+<select id="fbs" parameterType="String" resultMap="CourseMap2">
+ select *,s_student.id cid,s_school.id shoolid from s_student,s_school where s_student.sid=s_school.id AND
+                                                                             schoolname=#{schoolname}
+ </select>
+    <resultMap type="com.tr.pojo.Course" id="CourseMap2">
+        <!--  typer:实体 -->
+        <id property="id" column="cid"/>
+        <result property="name" column="name"/>
+        <result property="hours" column="hours"/>
+        <association property="school" javaType="com.tr.pojo.School">
+            <id column="sid" property="id"/>
+            <result column="schoolname" property="schoolname"/>
+        </association>
+    </resultMap>
+
+
+<!-- 目标3：将id=4这门课程的课时数修改未32+8=40 -->
+<update id="updateCourse" parameterType="Integer">
+ update s_student set hours=hours+8 where id=#{id}
+ </update>
+
+    <!-- 目标4：插入一条数据 -->
+    <insert id="insertCourse">
+INSERT INTO s_student(name,hours, sid) VALUES ('大数据存储', 32, 1)
+</insert>
+
+
+<!-- 目标5： 输出所有的学院开设的课程信息 -->
+<select id="findAllCourse" parameterType="java.util.Arrays" resultMap="findCourseBySchool">
+    select * from s_student,s_school where s_student.sid=s_school.id AND s_school.id in
+    <foreach collection="array" item="sid" open="(" separator="," close=")"> #{sid} </foreach>
+</select>
+<resultMap id="findCourseBySchool" type="com.tr.pojo.Course">
+    <id property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="hours" column="hours"/>
+    <association property="school" javaType="com.tr.pojo.School">
+        <id column="sid" property="id"/>
+        <result column="schoolname" property="schoolname"/>
+    </association>
+</resultMap>
+</mapper>
